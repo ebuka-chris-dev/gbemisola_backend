@@ -24,13 +24,14 @@ router.post("/create", async (req, res) => {
   }
 })
 router.get("/all", async (req, res) => {
+  let { page = 1, limit = 10 } = req.query;
+  page = parseInt(page);
+  limit = parseInt(limit);
+
   try {
-    const News = await getAllNews();
+     await getAllNews(page,limit,res);
   
-    res.json({
-      status: "SUCCESS",
-      data:News
-    });
+   
   } catch (err) {
     res.status(400).json({
       status: "FAILED",

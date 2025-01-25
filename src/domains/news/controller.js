@@ -15,12 +15,20 @@ const createNews = async (data) => {
     throw err;
   }
 };
-const getAllNews = async () => {
+const getAllNews = async (page,limit,res) => {
+  const skip = (page - 1) * limit;
   try {
-    const news = await News.find();
+    const news = await News.find().skip(skip).limit(limit);
+    const total = await News.countDocuments();
 
-    return news;
-  } catch (err) {
+    res.json({
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      totalPosts: total,
+      data: news,
+    });
+    } catch (err) {
     console.log(err);
   }
 };
