@@ -15,10 +15,20 @@ const createMedia = async (data) => {
     throw err;
   }
 };
-const getAllMedia = async () => {
-  try {
-    const media = await Media.find();
+const getAllMedia = async (page,limit,res) => {
+  const skip = (page - 1) * limit;
 
+  try {
+    const media  = await Media.find().skip(skip).limit(limit);
+    const total = await Media.countDocuments();
+
+    res.json({
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      totalPosts: total,
+      data: media,
+    });
     return media;
   } catch (err) {
     console.log(err);

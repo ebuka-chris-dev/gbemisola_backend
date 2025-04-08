@@ -24,13 +24,12 @@ router.post("/create", async (req, res) => {
   }
 })
 router.get("/all", async (req, res) => {
+  let { page = 1, limit = 10 } = req.query;
+  page = parseInt(page);
+  limit = parseInt(limit);
   try {
-    const Media = await getAllMedia();
-  
-    res.json({
-      status: "SUCCESS",
-      data:Media
-    });
+     await getAllMedia(page,limit,res);
+
   } catch (err) {
     res.status(400).json({
       status: "FAILED",
