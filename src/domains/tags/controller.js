@@ -1,23 +1,36 @@
 const Tag = require("./model");
 
 const createTag = async (data) => {
-  const { name} = data;
+  const { name } = data;
   try {
-    const tag = new Tag({
-      name
-    });
+    const existingTag = await Tag.findOne({ name }); // Await the result
+    if (existingTag) {
+      throw new Error("Tag with the same name already exists");
+    }
+
+    const tag = new Tag({ name });
     await tag.save();
+
     return tag;
   } catch (err) {
     throw err;
   }
 };
-const getAllTag = async () => {
-  try {
-    const tag = await Tag.find();
 
-    return tag;
-  } catch (err) {
+const getAllTag = async  (page,limit,res) => {
+  const skip = (page - 1) * limit;
+  try {
+    const tags = await Tag.find().skip(skip).limit(limit);
+    const total = await Tag.countDocuments();
+
+    res.json({
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      totalPosts: total,
+      data: tags,
+    });}
+     catch (err) {
     console.log(err);
   }
 };
