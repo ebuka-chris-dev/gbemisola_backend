@@ -47,6 +47,10 @@ const getSingleTag = async (_id) => {
 // update user
 const updateTag = async (tagId, data) => {
   try {
+    const existingTag = await Tag.findOne({ name:data.name }); // Await the result
+    if (existingTag) {
+      throw new Error("Tag with the same name already exists");
+    }
     const tag = await Tag.updateOne({ _id: tagId }, data);
     return tag;
   } catch (err) {
