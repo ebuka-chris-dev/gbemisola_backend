@@ -28,7 +28,7 @@ const createEmail = async (data) => {
     },
     connectionTimeout: 100000, // 10 seconds
     logger: true,   // Add this
-    debug: true 
+    debug: true, 
     tls: {
       rejectUnauthorized: false, // ⚠️ disables SSL hostname check
     },
