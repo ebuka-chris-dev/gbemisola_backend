@@ -15,7 +15,7 @@ const createEmail = async (data) => {
   if (!name || !senderEmail || !message) {
     throw Error("All fields are required")
   }
-  console.log(process.env.SMTP_HOST,process.env.SMTP_PASS,process.env.SMTP_USER)
+  // console.log(process.env.SMTP_HOST,process.env.SMTP_PASS,process.env.SMTP_USER)
 
   // create email transporter
   const transporter = nodemailer.createTransport({
@@ -26,9 +26,12 @@ const createEmail = async (data) => {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
-    tls: {
-      rejectUnauthorized: false, // ⚠️ disables SSL hostname check
-    },
+    connectionTimeout: 100000, // 10 seconds
+    logger: true,   // Add this
+    debug: true 
+    // tls: {
+    //   rejectUnauthorized: false, // ⚠️ disables SSL hostname check
+    // },
   });
 
   // email content
@@ -46,10 +49,12 @@ const createEmail = async (data) => {
     `,
   };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
     // Save email to the database after it is sent
-    await email.save();
-
+    const savePromise = email.save();
+    await transporter.sendMail(mailOptions);
+    await savePromise;
+    
     return email; // Return the saved email document
 
   } catch (err) {
