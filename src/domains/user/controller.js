@@ -212,8 +212,8 @@ const updatePassword = async ({ userId, password }) => {
     if (!user) {
       throw Error("User Account not found");
     }
-    // const hashPassword = await hashData(password);
-    // user.password = hashPassword;
+    const hashPassword = await hashData(password);
+    user.password = hashPassword;
     user.save();
     return { userId };
   } catch (err) {

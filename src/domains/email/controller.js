@@ -15,8 +15,6 @@ const createEmail = async (data) => {
   if (!name || !senderEmail || !message) {
     throw Error("All fields are required")
   }
-  // console.log(process.env.SMTP_HOST,process.env.SMTP_PASS,process.env.SMTP_USER)
-
   // create email transporter
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
