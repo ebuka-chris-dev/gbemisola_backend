@@ -15,23 +15,31 @@ const createNews = async (data) => {
     throw err;
   }
 };
-const getAllNews = async (page,limit,res) => {
+const getAllNews = async (page, limit, res) => {
   const skip = (page - 1) * limit;
+
   try {
-    const news = await News.find().skip(skip).limit(limit);
-    const total = await News.countDocuments();
+    const [news, total] = await Promise.all([
+      News.find()
+        .sort({ createdAt: -1 }) // newest first
+        .skip(skip)
+        .limit(limit),
+      News.countDocuments()
+    ]);
 
     res.json({
       page,
       limit,
       totalPages: Math.ceil(total / limit),
       totalPosts: total,
-      data: news,
+      data: news
     });
-    } catch (err) {
-    console.log(err);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 
 const getSingleNews = async (_id) => {
   try {

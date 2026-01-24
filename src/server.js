@@ -16,6 +16,7 @@ app.get("/", async (req, res) => {
 
 }); 
 
+    console.log(process.env.PORT)
 
 
 const startServer = () => {
