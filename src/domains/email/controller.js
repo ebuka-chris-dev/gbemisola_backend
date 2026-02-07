@@ -1,10 +1,27 @@
 const Email = require("./model");
 const nodemailer = require('nodemailer');
 
+
+// create email transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: true, // true for port 465
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+  connectionTimeout: 100000, // 10 seconds
+  logger: true,   // Add this
+  debug: true,
+  // tls: {
+  //   rejectUnauthorized: false, // ⚠️ disables SSL hostname check
+  // },
+});
+
 // Create a new email and send it
 const createEmail = async (data) => {
-  const { name, email, subject, message } = data;
-  let senderEmail = email;
+  const { name, email: senderEmail, subject, message } = data;
   try {
     // Save the email data into MongoDB (Email model)
     const email = new Email({
@@ -12,47 +29,36 @@ const createEmail = async (data) => {
     });
 
     // validate input
-  if (!name || !senderEmail || !message) {
-    throw Error("All fields are required")
-  }
-  // create email transporter
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: true, // true for port 465
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-    connectionTimeout: 100000, // 10 seconds
-    logger: true,   // Add this
-    debug: true, 
-    tls: {
-      rejectUnauthorized: false, // ⚠️ disables SSL hostname check
-    },
-  });
+    if (!name || !senderEmail || !message) {
+      throw Error("All fields are required")
+    }
 
-  // email content
-  const mailOptions = {
-    from: `"Website Contact" <${process.env.SMTP_USER}>`,
-    to: process.env.SMTP_USER, // send to yourself
-    replyTo: senderEmail, // allows you to hit "Reply" to contact the user
-    subject: `New message from ${name}`,
-    html: `
-      <h3>Contact Form Submission</h3>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Subject:</strong> ${subject}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Message:</strong><br>${message}</p>
-    `,
-  };
+
+    // email content
+    const mailOptions = {
+      from: `"Website Contact" <${process.env.SMTP_USER}>`,
+      to: process.env.SMTP_USER, // send to yourself
+      replyTo: senderEmail, // allows you to hit "Reply" to contact the user
+      subject: `New message from ${name}: ${subject || 'No Subject'}`,
+      html: `
+        <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
+          <h2 style="color: #2d5a27;">Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${senderEmail}</p> 
+          <p><strong>Subject:</strong> ${subject || 'N/A'}</p>
+          <hr />
+          <p><strong>Message:</strong></p>
+          <p style="white-space: pre-wrap;">${message}</p>
+        </div>
+      `,
+    };
 
     // await transporter.sendMail(mailOptions);
     // Save email to the database after it is sent
     const savePromise = email.save();
     await transporter.sendMail(mailOptions);
     await savePromise;
-    
+
     return email; // Return the saved email document
 
   } catch (err) {

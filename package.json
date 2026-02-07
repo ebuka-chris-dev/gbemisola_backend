@@ -6,7 +6,7 @@
   "author": "arif",
   "license": "MIT",
   "scripts": {
-    "start": "node  -r dotenv/config src/server.js dotenv_config_path=env/local.env",
+    "start": "nodemon  -r dotenv/config src/server.js dotenv_config_path=env/local.env",
     "dev": "nodemon loader.js"
   },
   "dependencies": {
