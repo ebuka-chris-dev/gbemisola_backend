@@ -56,37 +56,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all registrations with optional filters and pagination
-// router.get("/", async (req, res) => {
-//   try {
-//     const filters = {};
-//     ["competition", "zone", "schoolType", "educationLevel"].forEach(key => {
-//       if (req.query[key]) filters[key] = req.query[key];
-//     });
-
-//     // Pagination parameters
-//     const page = parseInt(req.query.page) || 1; // default page 1
-//     const limit = parseInt(req.query.limit) || 10; // default 10 per page
-//     const skip = (page - 1) * limit;
-
-//     const total = await Registration.countDocuments(filters);
-//     const registrations = await Registration.find(filters)
-//       .sort({ createdAt: -1 }) // latest first
-//       .skip(skip)
-//       .limit(limit);
-
-//     res.json({
-//       page,
-//       limit,
-//       totalPages: Math.ceil(total / limit),
-//       totalRegistrations: total,
-//       registrations
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// });
 
 router.get("/", async (req, res) => {
   try {
