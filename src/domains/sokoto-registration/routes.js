@@ -33,12 +33,21 @@ router.post("/", async (req, res) => {
     const normalizedSchoolType = schoolType.replace(/ School$/, '').trim(); // "Private School" → "Private"
     const limit = slotLimits[normalizedSchoolType][educationLevel];
 
-    let slotRecord = await Slot.findOne({ competition, zone, schoolType, educationLevel });
+    // let slotRecord = await Slot.findOne({ competition, zone, schoolType, educationLevel });
 
-    if (!slotRecord) {
-      slotRecord = new Slot({ competition, zone, schoolType, educationLevel });
-    }
-
+    // if (!slotRecord) {
+    //   slotRecord = new Slot({ competition, zone, schoolType, educationLevel });
+    // }
+let slotRecord = await Slot.findOneAndUpdate(
+  { competition, zone, schoolType, educationLevel }, // Search criteria
+  { $setOnInsert: { competition, zone, schoolType, educationLevel } }, // Data to set only on creation
+  { 
+    upsert: true,    // Create it if it doesn't exist
+    new: true,       // Return the updated/new document
+    runValidators: true,
+    setDefaultsOnInsert: true 
+  }
+);
     if (slotRecord.slotsUsed >= limit) {
       return res.status(400).json({ message: "Registration for this category in your zone is already full." });
     }
