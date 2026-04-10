@@ -159,6 +159,49 @@ router.get("/zones/count", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+// Delete Registration
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the registration first
+    const registration = await Registration.findById(id);
+
+    if (!registration) {
+      return res.status(404).json({ message: "Registration not found" });
+    }
+
+    const { competition, zone, schoolType, educationLevel } = registration;
+
+    // Delete the registration
+    await Registration.findByIdAndDelete(id);
+
+    // Update slot usage
+    const slotRecord = await Slot.findOne({
+      competition,
+      zone,
+      schoolType,
+      educationLevel,
+    });
+
+    if (slotRecord && slotRecord.slotsUsed > 0) {
+      slotRecord.slotsUsed -= 1;
+      await slotRecord.save();
+    }
+
+    res.json({
+      message: "Registration deleted successfully",
+      status: "success",
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "Failed to delete registration",
+      status: "error",
+    });
+  }
+});
 // Get slot usage
 router.get("/slots", async (req, res) => {
   const slots = await Slot.find();
