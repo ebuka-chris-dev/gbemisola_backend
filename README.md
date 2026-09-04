@@ -1,350 +1,177 @@
 # Gbemisola Foundation — Backend API
 
-A Node.js and Express REST API powering the **Gbemisola Foundation web platform**.
+Backend API for the **Gbemisola Foundation web platform**, built with Node.js and Express. The API provides the backend services used by the foundation's website, including news, media, user-related functionality, email communication, and the Sokoto Learn registration system.
 
-The backend provides the server-side services required by the foundation's web application, including API routing, data management, authentication, file handling, communication services, and integration with external services.
+## 🌐 Project
 
-The frontend is maintained separately and communicates with this API through REST endpoints.
+* **Frontend:** https://gbemisolafoundation.org/
+* **Backend API:** https://gbemisola-backend.onrender.com
+* **Frontend Repository:** https://github.com/ebuka-chris-dev/gbemisola_frontend
 
-## 🌐 Production
+## 🚀 What I Built
 
-**Live API:**
-https://gbemisola-backend.onrender.com
+I developed the backend API that supports the Gbemisola Foundation website and its related services.
 
-**Frontend:**
-https://gbemisolafoundation.org
+### Core functionality
 
-**Frontend Repository:**
-https://github.com/ebuka-chris-dev/gbemisola_frontend
-
-> The frontend website is currently being restored.
-
----
-
-## 🚀 Overview
-
-The Gbemisola Foundation backend was developed as a dedicated REST API for a production web platform.
-
-The project uses a modular backend architecture, separating configuration, application domains, routes, utilities, and server initialization.
-
-```
-Client / React Frontend
-          │
-          │ HTTP Requests
-          ▼
-┌──────────────────────────┐
-│      Express.js API      │
-├──────────────────────────┤
-│ Authentication            │
-│ Application Routes        │
-│ Business Domains          │
-│ File Uploads              │
-│ Communication Services    │
-│ External Integrations     │
-└────────────┬─────────────┘
-             │
-             ▼
-        Database Layer
-```
-
-This separation allows the frontend and backend to be developed and deployed independently.
-
----
-
-## ✨ Key Capabilities
-
-The backend includes infrastructure for:
-
-* RESTful API development
-* User and application data management
-* Authentication and authorization
-* Password hashing
-* JWT-based authentication
-* File and image uploads
-* Email communication
-* SMS/phone communication
-* API request handling
-* Data validation and processing
+* REST API development with Node.js and Express
+* News management and API endpoints
+* Media management and image handling
+* User-related API functionality
+* Email functionality
+* Sokoto Learn registration system
+* Registration slot management
+* Tags and content organization
 * Database integration
-* External API integrations
-* CSV data export
-* API documentation with Postman
-* Cross-Origin Resource Sharing (CORS)
+* API authentication and protected operations
+* Request handling and validation
+* Integration between the React frontend and backend API
 
----
+## 📋 Sokoto Learn Registration
 
-## 🛠️ Technology Stack
+One of the backend features I implemented was the **Sokoto Learn registration system**.
 
-### Backend
+The system handles registration data and includes:
 
-* **Node.js**
-* **Express.js**
-* **JavaScript**
-* REST API
+* Registration submission
+* Competition information
+* Zone selection
+* School type
+* Education level
+* Registration slot management
+* Slot availability checking
 
-### Database
+The registration functionality is organized as its own backend domain with controllers, models, routes, and slot management logic.
 
-* **MongoDB**
-* **Mongoose**
-* Sequelize
-* PostgreSQL support
+## 🖼️ Media Management
 
-### Authentication & Security
+The application uses **Cloudinary** for managing uploaded media.
 
-* **JSON Web Token (JWT)**
-* **bcrypt**
-* **Node Forge**
-* CORS
-* Environment-based configuration
+Images are uploaded and stored through Cloudinary rather than being maintained as permanent files on the application server.
 
-### Communication
+This allowed the backend to integrate cloud-based media storage with the foundation's media and content functionality.
 
-* **Nodemailer** — email services
-* **Twilio** — SMS/communication services
+## 📰 News & Content
 
-### File Processing
+The backend provides API functionality for managing and retrieving foundation news and related content.
 
-* Express File Upload
-* JSON-to-CSV
+The codebase separates news functionality into its own domain containing:
 
-### Real-Time Communication
+```text
+controller.js
+model.js
+routes.js
+index.js
+```
 
-* Socket.IO**
+A similar domain-based structure is used for other major features of the application.
 
-### API Documentation
+## 📧 Email
 
-* **Swagger JSDoc**
-* **Swagger UI Express**
+The backend includes dedicated email functionality for handling application email operations.
 
-### Development & Code Quality
+Email functionality is separated into its own domain and supported by reusable utilities within the application.
 
-* ESLint
-* Airbnb ESLint configuration
-* Prettier
-* Nodemon
+## 🏗️ Project Structure
 
----
-
-## 🏗️ Project Architecture
-
-The backend follows a modular structure:
-
-```text id="5g6y84"
+```text
 src/
 ├── config/
-│   └── Application and database configuration
+│   └── db.js
 │
 ├── domains/
-│   └── Application-specific business domains
+│   ├── email/
+│   ├── media/
+│   ├── news/
+│   ├── sokoto-registration/
+│   ├── tags/
+│   ├── user/
+│   └── sochet/
 │
 ├── routes/
-│   └── API route definitions
-│
 ├── util/
-│   └── Shared utilities and helpers
+│   ├── authenticate.js
+│   ├── compareHashedData.js
+│   ├── generateOTP.js
+│   ├── hashData.js
+│   ├── sendMail.js
+│   └── slotLimits.js
 │
 └── server.js
 ```
 
-The separation of domains and routes keeps application responsibilities organized and makes the backend easier to maintain as functionality grows.
+The project uses a modular/domain-based structure to keep related models, controllers, routes, and business logic organized.
 
----
+## 🛠️ Technology
 
-## 🔐 Authentication & Security
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* Sequelize
+* JWT
+* Axios
+* Cloudinary
+* Nodemailer
+* Socket.IO
+* Twilio
+* Render
 
-The API includes security mechanisms for protecting application resources, including:
-
-* JWT authentication
-* Password hashing with bcrypt
-* Protected API routes
-* Environment-based secrets
-* CORS configuration
-* Authentication middleware
-* Secure communication services
-
-Sensitive credentials and service keys are managed through environment variables rather than being stored directly in source code.
-
----
-
-## 📡 API
-
-The backend exposes RESTful endpoints consumed by the Gbemisola Foundation frontend.
-
-The API is designed around HTTP-based communication between the client application and backend services.
-
-Example:
-
-```
-Frontend
-   │
-   │ GET /api/...
-   │ POST /api/...
-   │ PUT /api/...
-   │ DELETE /api/...
-   ▼
-Express API
-   │
-   ▼
-Application Domain
-   │
-   ▼
-Database / External Service
-```
-
----
-
-## 📚 API Documentation & Testing
+## 🧪 API Documentation & Testing
 
 The API was documented and tested using **Postman**.
 
-The Postman documentation covers the available API endpoints, including request methods, parameters, request bodies, authentication requirements, and expected responses.
+The Postman documentation provides the API requests needed to work with the backend, including request methods, parameters, request bodies, authentication requirements, and responses.
 
-**Postman API Documentation:**
-*Add your public Postman documentation link here*
-
-Using Postman throughout development helped with:
-
-* API endpoint testing
-* Request/response validation
-* Authentication testing
-* Debugging backend functionality
-* Testing different request scenarios
-* Maintaining API documentation for frontend integration
-
+**Postman Documentation:**
+Add your public Postman documentation link here.
 
 ## ☁️ Deployment
 
-The production backend is hosted on **Render**.
+The backend is deployed on **Render** and serves as the API consumed by the Gbemisola Foundation frontend.
 
-### Production API
+Production API:
 
+```text
 https://gbemisola-backend.onrender.com
-
-The frontend is deployed separately under the foundation's custom domain:
-
-https://gbemisolafoundation.org
-
-This deployment model allows the frontend and backend to operate independently while communicating through the REST API.
-
----
-
-## 💻 Local Development
-
-### 1. Clone the repository
-
 ```
+
+## 💻 Running Locally
+
+### Clone the repository
+
+```bash
 git clone https://github.com/ebuka-chris-dev/gbemisola_backend.git
 
 cd gbemisola_backend
 ```
 
-### 2. Install dependencies
+### Install dependencies
 
-```
+```bash
 npm install
 ```
 
-### 3. Configure environment variables
+### Configure environment variables
 
-The application uses environment-based configuration for sensitive credentials and external services.
+Create the required environment configuration used by the application.
 
-Create the appropriate environment configuration for your local setup.
+These include credentials and configuration for the database, authentication, Cloudinary, email services, and other external services used by the API.
 
-Example:
+### Start the development server
 
-```
-PORT=8080
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-```
-
-Additional configuration may be required for services such as email, SMS, and other external integrations.
-
-### 4. Start the development server
-
-```
+```bash
 npm run dev
 ```
 
-Or:
+## 🔗 Related Repository
 
-```
-npm start
-```
-
----
-
-## 🔗 Related Project
-
-This backend powers the Gbemisola Foundation frontend.
-
-### Frontend Repository
+The backend works together with the Gbemisola Foundation React frontend:
 
 https://github.com/ebuka-chris-dev/gbemisola_frontend
 
-### Frontend Website
-
-https://gbemisolafoundation.org
-
----
-
-## 💡 Engineering Highlights
-
-This project demonstrates practical backend engineering experience with:
-
-* Designing REST APIs using Node.js and Express
-* Structuring a backend into independent application domains
-* Implementing authentication and authorization
-* Working with MongoDB and Mongoose
-* Integrating external services
-* Handling file uploads
-* Implementing email and SMS communication
-* Building real-time capabilities with Socket.IO
-* Documenting APIs with Swagger/OpenAPI
-* Supporting data export workflows
-* Managing environment-based configuration
-* Integrating a backend with an independent React frontend
-* Deploying a Node.js application to a cloud hosting platform
-
----
-
-## 📌 Project Architecture
-
-```
-                 Gbemisola Foundation
-                         │
-                         ▼
-                React Frontend
-                         │
-                         │ REST API
-                         ▼
-              Node.js / Express API
-                         │
-          ┌──────────────┼──────────────┐
-          │              │              │
-          ▼              ▼              ▼
-       MongoDB       External APIs   Communication
-                                      Services
-```
-
----
-
 ## 👨‍💻 Developer
 
-**Ebuka Christian**
+**Ebuka Christian Ugwu**
 
-Full-Stack JavaScript Developer specializing in React, Node.js, Express, REST APIs, database-driven applications, and production deployments.
-
-GitHub:
-https://github.com/ebuka-chris-dev
-
----
-
-## 🔗 Project Links
-
-| Resource               | Link                                                  |
-| ---------------------- | ----------------------------------------------------- |
-| 🌐 Foundation Website  | https://gbemisolafoundation.org                       |
-| ⚙️ Production API      | https://gbemisola-backend.onrender.com                |
-| 💻 Frontend Repository | https://github.com/ebuka-chris-dev/gbemisola_frontend |
-| 🔧 Backend Repository  | https://github.com/ebuka-chris-dev/gbemisola_backend  |
+Full-Stack JavaScript Developer
